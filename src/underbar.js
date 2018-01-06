@@ -38,7 +38,7 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
-    if (n>array.length){
+    if (n > array.length){
       return array;
     }
     return n === undefined ? array[array.length-1] : array.slice(array.length-n);
@@ -68,13 +68,11 @@
     // implemented for you. Instead of using a standard `for` loop, though,
     // it uses the iteration helper `each`, which you will need to write.
     var result = -1;
-
     _.each(array, function(item, index) {
       if (item === target && result === -1) {
         result = index;
       }
     });
-
     return result;
   };
 
@@ -170,8 +168,27 @@ _.filter = function(collection, test) {
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-  };
-
+  _.each(collection, function(item) {
+    if (accumulator === undefined) {
+      accumulator = item;
+    } else {
+      accumulator = iterator(accumulator, item);
+    }
+  });
+  return accumulator;
+};
+/*var callCount = 0;
+var returnFalsy = function(total, item) {
+  callCount++;
+  if (callCount === 1) {
+    return undefined;
+  } else {
+    return item + 1;
+  }
+};
+var total = _.reduce([1,1,2], returnFalsy);
+expect(total).to.equal(3);
+*/
   // Determine if the array or object contains a given value (using `===`).
   _.contains = function(collection, target) {
     // TIP: Many iteration problems can be most easily expressed in
@@ -187,6 +204,20 @@ _.filter = function(collection, test) {
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
+  var status = true;
+  iterator = iterator || _.identity;
+  if (collection.length === 0) {
+    return true;
+  }
+
+  return _.reduce(collection, function(status, item){
+    if(status === false) {
+      return false;
+    }
+      return !!(iterator(item));
+
+  }, status);
+
     // TIP: Try re-using reduce() here.
   };
 
